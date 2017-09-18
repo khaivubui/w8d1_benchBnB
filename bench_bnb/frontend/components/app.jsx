@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 import GreetingContainer from './greeting/greeting_container';
 import SessionFormContainer from './session_form/session_form_container';
+import SearchContainer from './search_container';
 import { AuthRoute } from '../util/route_util';
 
 const App = () => (
@@ -13,6 +14,7 @@ const App = () => (
     </header>
     <AuthRoute path="/login" component={SessionFormContainer} />
     <AuthRoute path="/signup" component={SessionFormContainer} />
+    <Route exact path="/" component={ SearchContainer } />
   </div>
 );
 

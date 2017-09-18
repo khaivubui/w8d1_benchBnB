@@ -5,8 +5,12 @@ import Root from './components/root';
 
 // import * as AuthUtils from './util/session_api_util.js';
 // import * as Actions from './actions/session_actions';
+// import * as BenchUtils from './util/bench_api_util.js';
+// import * as BenchActions from './actions/bench_actions';
 // window.AuthUtils = AuthUtils;
 // window.Actions = Actions;
+// window.BenchUtils = BenchUtils;
+// window.BenchActions = BenchActions;
 
 document.addEventListener('DOMContentLoaded', () => {
   const preloadedState = {
