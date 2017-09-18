@@ -12793,20 +12793,13 @@ var _root = __webpack_require__(242);
 
 var _root2 = _interopRequireDefault(_root);
 
-var _session_actions = __webpack_require__(39);
-
-var Actions = _interopRequireWildcard(_session_actions);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// window.AuthUtils = AuthUtils;
-window.Actions = Actions;
-// TODO: TESTING END
-
-// TODO: TESTING START
 // import * as AuthUtils from './util/session_api_util.js';
+// import * as Actions from './actions/session_actions';
+// window.AuthUtils = AuthUtils;
+// window.Actions = Actions;
+
 document.addEventListener('DOMContentLoaded', function () {
   var preloadedState = {
     entities: {},
@@ -29403,6 +29396,8 @@ var _session_form_container = __webpack_require__(283);
 
 var _session_form_container2 = _interopRequireDefault(_session_form_container);
 
+var _route_util = __webpack_require__(285);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
@@ -29419,8 +29414,8 @@ var App = function App() {
       ),
       _react2.default.createElement(_greeting_container2.default, null)
     ),
-    _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _session_form_container2.default }),
-    _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _session_form_container2.default })
+    _react2.default.createElement(_route_util.AuthRoute, { path: '/login', component: _session_form_container2.default }),
+    _react2.default.createElement(_route_util.AuthRoute, { path: '/signup', component: _session_form_container2.default })
   );
 };
 
@@ -29494,13 +29489,9 @@ var Greeting = function Greeting(_ref) {
     return _react2.default.createElement(
       'div',
       null,
-      _react2.default.createElement(
-        'h4',
-        null,
-        'Welcome back, ',
-        currentUser.username,
-        _react2.default.createElement('br', null)
-      ),
+      'Welcome back, ',
+      currentUser.username,
+      _react2.default.createElement('br', null),
       _react2.default.createElement(
         'button',
         { onClick: logout },
@@ -29512,12 +29503,12 @@ var Greeting = function Greeting(_ref) {
       'div',
       null,
       _react2.default.createElement(
-        _reactRouterDom.Link,
+        _reactRouterDom.NavLink,
         { to: '/signup' },
         'Sign Up'
       ),
       _react2.default.createElement(
-        _reactRouterDom.Link,
+        _reactRouterDom.NavLink,
         { to: '/login' },
         'Login'
       )
@@ -29618,17 +29609,13 @@ var SessionForm = function (_React$Component) {
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
-      var _this2 = this;
-
       e.preventDefault();
-      this.props.processForm(this.state).then(function () {
-        return _this2.props.history.push('/');
-      });
+      this.props.processForm(this.state);
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this2 = this;
 
       var label = this.props.formType === 'signup' ? 'Sign Up' : 'Log In';
       var otherLink = void 0;
@@ -29669,7 +29656,7 @@ var SessionForm = function (_React$Component) {
         _react2.default.createElement(
           'form',
           { onSubmit: function onSubmit(e) {
-              return _this3.handleSubmit(e);
+              return _this2.handleSubmit(e);
             } },
           _react2.default.createElement(
             'label',
@@ -29678,12 +29665,12 @@ var SessionForm = function (_React$Component) {
             _react2.default.createElement('input', { type: 'text',
               value: this.state.username,
               onChange: function onChange(e) {
-                return _this3.update(e, 'username');
+                return _this2.update(e, 'username');
               } }),
             _react2.default.createElement('input', { type: 'password',
               value: this.state.password,
               onChange: function onChange(e) {
-                return _this3.update(e, 'password');
+                return _this2.update(e, 'password');
               } }),
             _react2.default.createElement('input', { type: 'submit', value: label })
           )
@@ -29696,6 +29683,51 @@ var SessionForm = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = SessionForm;
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AuthRoute = undefined;
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(105);
+
+var _reactRouterDom = __webpack_require__(62);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Auth = function Auth(_ref) {
+  var Component = _ref.component,
+      path = _ref.path,
+      loggedIn = _ref.loggedIn;
+  return _react2.default.createElement(_reactRouterDom.Route, {
+    path: path,
+    render: function render(props) {
+      if (loggedIn) {
+        return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/' });
+      } else {
+        return _react2.default.createElement(Component, props);
+      }
+    } });
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    loggedIn: Boolean(state.session.currentUser)
+  };
+};
+
+var AuthRoute = exports.AuthRoute = (0, _reactRouterDom.withRouter)((0, _reactRedux.connect)(mapStateToProps)(Auth));
 
 /***/ })
 /******/ ]);

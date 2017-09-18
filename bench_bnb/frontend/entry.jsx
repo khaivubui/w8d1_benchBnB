@@ -3,12 +3,10 @@ import ReactDOM from 'react-dom';
 import configureStore from './store/store';
 import Root from './components/root';
 
-// TODO: TESTING START
 // import * as AuthUtils from './util/session_api_util.js';
-import * as Actions from './actions/session_actions';
+// import * as Actions from './actions/session_actions';
 // window.AuthUtils = AuthUtils;
-window.Actions = Actions;
-// TODO: TESTING END
+// window.Actions = Actions;
 
 document.addEventListener('DOMContentLoaded', () => {
   const preloadedState = {
