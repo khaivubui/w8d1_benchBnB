@@ -9,3 +9,5 @@ class BenchMap extends React.Component {
     );
   }
 }
+
+export default BenchMap;
