@@ -12,4 +12,13 @@
 
 class Bench < ApplicationRecord
   validates :description, :lat, :lng, presence: true
+
+  def self.in_bounds(bounds)
+    self.all.map do |bench|
+      bench.lat >= bounds.southWest.lat &&
+      bench.lat <= bounds.northEast.lat &&
+      bench.lng >= bounds.southWest.lng &&
+      bench.lng <= bounds.northEast.lng
+    end
+  end
 end
