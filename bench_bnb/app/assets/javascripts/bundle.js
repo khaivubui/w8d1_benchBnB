@@ -30086,6 +30086,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var markerFromBench = function markerFromBench(bench) {
+  return new window.google.maps.Marker({
+    position: new window.google.maps.LatLng(bench.lat, bench.lng),
+    description: bench.description
+  });
+};
+
 var MarkerManager = function () {
   function MarkerManager(map) {
     _classCallCheck(this, MarkerManager);
@@ -30093,8 +30100,6 @@ var MarkerManager = function () {
     this.map = map;
     this.markers = {};
   }
-  //...
-
 
   _createClass(MarkerManager, [{
     key: "updateMarkers",
@@ -30108,11 +30113,7 @@ var MarkerManager = function () {
 
       benches.forEach(function (bench) {
         if (!Object.keys(_this.markers).includes(bench.id)) {
-          var marker = new Marker({
-            position: new LatLng(bench.lat, bench.lng),
-            description: bench.description
-          });
-          _this.markers[bench.id] = marker;
+          _this.markers[bench.id] = markerFromBench(bench);
         }
       });
     }
