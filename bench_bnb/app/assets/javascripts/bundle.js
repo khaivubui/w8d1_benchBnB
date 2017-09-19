@@ -25600,6 +25600,10 @@ var _session_reducer = __webpack_require__(238);
 
 var _session_reducer2 = _interopRequireDefault(_session_reducer);
 
+var _ui_reducer = __webpack_require__(297);
+
+var _ui_reducer2 = _interopRequireDefault(_ui_reducer);
+
 var _errors_reducer = __webpack_require__(240);
 
 var _errors_reducer2 = _interopRequireDefault(_errors_reducer);
@@ -25609,6 +25613,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var rootReducer = (0, _redux.combineReducers)({
   entities: _entities_reducer2.default,
   session: _session_reducer2.default,
+  ui: _ui_reducer2.default,
   errors: _errors_reducer2.default
 });
 
@@ -29621,6 +29626,11 @@ var SessionForm = function (_React$Component) {
   }
 
   _createClass(SessionForm, [{
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      console.log('unmounting');
+    }
+  }, {
     key: 'update',
     value: function update(e, fieldType) {
       this.setState(_defineProperty({}, fieldType, e.target.value));
@@ -29758,9 +29768,10 @@ var AuthRoute = exports.AuthRoute = (0, _reactRouterDom.withRouter)((0, _reactRe
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var fetchBenches = exports.fetchBenches = function fetchBenches() {
+var fetchBenches = exports.fetchBenches = function fetchBenches(bounds) {
   return $.ajax({
-    url: '/api/benches'
+    url: '/api/benches',
+    data: { bounds: bounds }
   });
 };
 
@@ -29844,9 +29855,9 @@ var receiveBenches = exports.receiveBenches = function receiveBenches(benches) {
   };
 };
 
-var fetchBenches = exports.fetchBenches = function fetchBenches() {
+var fetchBenches = exports.fetchBenches = function fetchBenches(bounds) {
   return function (dispatch) {
-    return APIUtil.fetchBenches().then(function (benches) {
+    return APIUtil.fetchBenches(bounds).then(function (benches) {
       return dispatch(receiveBenches(benches));
     });
   };
@@ -29890,7 +29901,14 @@ var BenchIndex = function (_React$Component) {
   _createClass(BenchIndex, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.fetchBenches();
+      console.log(this.props.bounds);
+      this.props.fetchBenches(this.props.bounds);
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // console.log(this.props.bounds);
+      this.props.fetchBenches(this.props.bounds);
     }
   }, {
     key: 'render',
@@ -29935,6 +29953,8 @@ var _reactRedux = __webpack_require__(105);
 
 var _bench_actions = __webpack_require__(289);
 
+var _filter_actions = __webpack_require__(296);
+
 var _search = __webpack_require__(293);
 
 var _search2 = _interopRequireDefault(_search);
@@ -29950,14 +29970,18 @@ var arrayBenches = function arrayBenches(_ref) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    bounds: state.ui.filter.bounds,
     benches: arrayBenches(state)
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    fetchBenches: function fetchBenches() {
-      return dispatch((0, _bench_actions.fetchBenches)());
+    fetchBenches: function fetchBenches(bounds) {
+      return dispatch((0, _bench_actions.fetchBenches)(bounds));
+    },
+    updateBounds: function updateBounds(bounds) {
+      return dispatch((0, _filter_actions.updateBounds)(bounds));
     }
   };
 };
@@ -29993,8 +30017,11 @@ var Search = function Search(props) {
   return _react2.default.createElement(
     'div',
     null,
-    _react2.default.createElement(_bench_map2.default, { benches: props.benches }),
+    _react2.default.createElement(_bench_map2.default, {
+      benches: props.benches,
+      updateBounds: props.updateBounds }),
     _react2.default.createElement(_bench_index2.default, {
+      bounds: props.bounds,
       benches: props.benches,
       fetchBenches: props.fetchBenches })
   );
@@ -30043,6 +30070,8 @@ var BenchMap = function (_React$Component) {
   _createClass(BenchMap, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       var Map = window.google.maps.Map;
 
       var mapOptions = {
@@ -30050,6 +30079,19 @@ var BenchMap = function (_React$Component) {
         zoom: 13
       };
       this.map = new Map(this.refs.map, mapOptions);
+      this.map.addListener('idle', function () {
+        var bounds = _this2.map.getBounds();
+        _this2.props.updateBounds({
+          northEast: {
+            lat: bounds.getNorthEast().lat(),
+            lng: bounds.getNorthEast().lng()
+          },
+          southWest: {
+            lat: bounds.getSouthWest().lat(),
+            lng: bounds.getSouthWest().lng()
+          }
+        });
+      });
       this.markerManager = new _marker_manager2.default(this.map);
       this.markerManager.updateMarkers(this.props.benches);
     }
@@ -30123,6 +30165,80 @@ var MarkerManager = function () {
 }();
 
 exports.default = MarkerManager;
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var UPDATE_BOUNDS = exports.UPDATE_BOUNDS = 'UPDATE_BOUNDS';
+
+var updateBounds = exports.updateBounds = function updateBounds(bounds) {
+  return {
+    type: UPDATE_BOUNDS,
+    bounds: bounds
+  };
+};
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _redux = __webpack_require__(38);
+
+var _filter_reducer = __webpack_require__(298);
+
+var _filter_reducer2 = _interopRequireDefault(_filter_reducer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var uiReducer = (0, _redux.combineReducers)({
+  filter: _filter_reducer2.default
+});
+
+exports.default = uiReducer;
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _filter_actions = __webpack_require__(296);
+
+var filterReducer = function filterReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  Object.freeze(state);
+  switch (action.type) {
+    case _filter_actions.UPDATE_BOUNDS:
+      var bounds = action.bounds;
+
+      return { bounds: bounds };
+    default:
+      return state;
+  }
+};
+
+exports.default = filterReducer;
 
 /***/ })
 /******/ ]);

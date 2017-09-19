@@ -10,6 +10,10 @@ class SessionForm extends React.Component {
     };
   }
 
+  componentWillUnmount () {
+    console.log('unmounting');
+  }
+
   update (e, fieldType) {
     this.setState({
       [fieldType]: e.target.value

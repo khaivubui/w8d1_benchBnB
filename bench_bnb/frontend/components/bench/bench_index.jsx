@@ -2,7 +2,13 @@ import React from 'react';
 
 class BenchIndex extends React.Component {
   componentDidMount () {
-    this.props.fetchBenches();
+    console.log(this.props.bounds);
+    this.props.fetchBenches(this.props.bounds);
+  }
+
+  componentDidUpdate () {
+    // console.log(this.props.bounds);
+    this.props.fetchBenches(this.props.bounds);
   }
 
   render () {

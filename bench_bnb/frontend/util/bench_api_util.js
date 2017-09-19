@@ -1,5 +1,6 @@
-export const fetchBenches = () => (
+export const fetchBenches = (bounds) => (
   $.ajax({
-    url: '/api/benches'
+    url: '/api/benches',
+    data: { bounds }
   })
 );
