@@ -7,19 +7,15 @@ class BenchIndex extends React.Component {
 
   render () {
     const { benches } = this.props;
-    if (benches) {
-      return (
-        <ul>
-          {benches.map(bench => (
-            <li key={bench.id}>
-              {bench.description}: {bench.lat}, {bench.lng}
-            </li>
-          ))}
-        </ul>
-      );
-    } else {
-      return <div></div>;
-    }
+    return (
+      <ul>
+        {benches.map(bench => (
+          <li key={bench.id}>
+            {bench.description}: {bench.lat}, {bench.lng}
+          </li>
+        ))}
+      </ul>
+    );
   }
 }
 

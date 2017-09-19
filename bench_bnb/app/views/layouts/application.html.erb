@@ -4,6 +4,8 @@
     <title>BenchBnb</title>
     <%= csrf_meta_tags %>
 
+    <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyC9l0VenvSUntE7seJyw0nUd7YksrLzKsE" %>
+
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
     <% if logged_in? %>
